@@ -7,11 +7,10 @@ public class puzzle15 implements ActionListener {
     private JFrame ventana, mDialog;
     private JButton[] btnBoton = new JButton[16];
     private JButton btnIniciar, btnIniciar2, btnTemporal;
-    private Random btnInit;
     private JLabel esInfo;
     private Random puzzleInit;
     private JTextField timePlay;
-    private int dirX = 5, dirY = 5, control = 0, control2 = 0;
+    private Integer dirX = 5, dirY = 5, control = 0, control2 = 0;
 
     void printBtn() {
         puzzleInit = new Random();
@@ -57,14 +56,51 @@ public class puzzle15 implements ActionListener {
         }
     });
 
-    Timer timerMoveX = new Timer(9, new ActionListener() {
+    Timer timerMoveXR = new Timer(9, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             int x = btnTemporal.getLocation().x, y = btnTemporal.getLocation().y;
             int x2 = btnBoton[15].getLocation().x;
             btnTemporal.setLocation(x + dirX, y);
             btnBoton[15].setLocation(x2 - dirX, y);
             if (x + dirX >= control && x2 - dirX == control2) {
-                timerMoveX.stop();
+                timerMoveXR.stop();
+            }
+        }
+    });
+
+    Timer timerMoveXL = new Timer(9, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            int x = btnTemporal.getLocation().x, y = btnTemporal.getLocation().y;
+            int x2 = btnBoton[15].getLocation().x;
+            btnTemporal.setLocation(x - dirX, y);
+            btnBoton[15].setLocation(x2 + dirX, y);
+            if (x - dirX >= control && x2 + dirX == control2) {
+                timerMoveXL.stop();
+            }
+        }
+    });
+
+    
+    Timer timerMoveYT = new Timer(9, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            int x = btnTemporal.getLocation().x, y = btnTemporal.getLocation().y;
+            int y2 = btnBoton[15].getLocation().y;
+            btnTemporal.setLocation(x, y + dirY);
+            btnBoton[15].setLocation(x , y2 - dirY);
+            if (y + dirY >= control && y2 - dirY == control2) {
+                timerMoveYT.stop();
+            }
+        }
+    });
+    
+    Timer timerMoveYB = new Timer(9, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            int x = btnTemporal.getLocation().x, y = btnTemporal.getLocation().y;
+            int y2 = btnBoton[15].getLocation().y;
+            btnTemporal.setLocation(x, y - dirY);
+            btnBoton[15].setLocation(x , y2 + dirY);
+            if (y - dirY >= control && y2 + dirY == control2) {
+                timerMoveYB.stop();
             }
         }
     });
@@ -72,16 +108,32 @@ public class puzzle15 implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         btnTemporal = (JButton) e.getSource();
         if (e.getSource() == btnTemporal) {
-            System.out.println(btnTemporal.getLocation().x + " " +
-                    btnTemporal.getLocation().y);
+            // System.out.println(btnTemporal.getLocation().x + " " + btnTemporal.getLocation().y);
 
-            if (btnTemporal.getLocation().x + 55 == btnBoton[15].getLocation().x
-                    || btnTemporal.getLocation().y - 55 == btnBoton[15].getLocation().y) {
+            if (btnTemporal.getLocation().x + 55 == btnBoton[15].getLocation().x && btnTemporal.getLocation().y  == btnBoton[15].getLocation().y) {
                 control = btnBoton[15].getLocation().x;
                 control2 = btnTemporal.getLocation().x;
-                timerMoveX.start();
+                timerMoveXR.start();
             }
 
+            if (btnTemporal.getLocation().x - 55 == btnBoton[15].getLocation().x && btnTemporal.getLocation().y  == btnBoton[15].getLocation().y) {
+                control = btnBoton[15].getLocation().x;
+                control2 = btnTemporal.getLocation().x;
+                timerMoveXL.start();
+            }
+
+            if (btnTemporal.getLocation().y + 55 == btnBoton[15].getLocation().y && btnTemporal.getLocation().x  == btnBoton[15].getLocation().x) {
+                control = btnBoton[15].getLocation().y;
+                control2 = btnTemporal.getLocation().y;
+                timerMoveYT.start();
+            }
+
+            if (btnTemporal.getLocation().y - 55 == btnBoton[15].getLocation().y && btnTemporal.getLocation().x  == btnBoton[15].getLocation().x) {
+                control = btnBoton[15].getLocation().y;
+                control2 = btnTemporal.getLocation().y;
+                timerMoveYB.start();
+            }
+            System.out.println(btnTemporal.getLocation().x + " " + btnTemporal.getLocation().y);
         }
         if (e.getSource() == btnIniciar) {
             timePlay.setText("0");
@@ -98,10 +150,10 @@ public class puzzle15 implements ActionListener {
 
         }
 
-        // if (e.getSource() == btnIniciar2) {
-        // System.out.println("Entrando al Action");
-        // timerInit.stop();
-        // }
+        if (e.getSource() == btnIniciar2) {
+            // System.out.println(btnBoton[15].getLocation().x + " " + btnBoton[15].getLocation().y);
+            
+        }
 
     }
 
