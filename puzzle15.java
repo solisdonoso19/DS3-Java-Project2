@@ -11,6 +11,7 @@ public class puzzle15 implements ActionListener {
     private Random puzzleInit;
     private JTextField timePlay;
     private Integer dirX = 5, dirY = 5, control = 0, control2 = 0;
+    private Integer[] btnControl = new Integer[16];
 
     void printBtn() {
         puzzleInit = new Random();
@@ -23,9 +24,11 @@ public class puzzle15 implements ActionListener {
             btnBoton[i] = new JButton(String.format("%02d", i + 1));
 
             btnBoton[i].setBounds(115 + 55 * (i % 4), 115 + 55 * (i / 4), 50, 50);
+            btnControl[i] = (115 + 55 * (i % 4)) + (115 + 55 * (i / 4));
             ventana.add(btnBoton[i]);
             btnBoton[i].addActionListener(this);
         }
+        btnBoton[15].setVisible(false);
 
         btnIniciar = new JButton("Iniciar");
         btnIniciar.setBounds(10, 115, 90, 30);
@@ -80,61 +83,90 @@ public class puzzle15 implements ActionListener {
         }
     });
 
-    
     Timer timerMoveYT = new Timer(9, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             int x = btnTemporal.getLocation().x, y = btnTemporal.getLocation().y;
             int y2 = btnBoton[15].getLocation().y;
             btnTemporal.setLocation(x, y + dirY);
-            btnBoton[15].setLocation(x , y2 - dirY);
+            btnBoton[15].setLocation(x, y2 - dirY);
             if (y + dirY >= control && y2 - dirY == control2) {
                 timerMoveYT.stop();
             }
         }
     });
-    
+
     Timer timerMoveYB = new Timer(9, new ActionListener() {
         public void actionPerformed(ActionEvent e) {
             int x = btnTemporal.getLocation().x, y = btnTemporal.getLocation().y;
             int y2 = btnBoton[15].getLocation().y;
             btnTemporal.setLocation(x, y - dirY);
-            btnBoton[15].setLocation(x , y2 + dirY);
+            btnBoton[15].setLocation(x, y2 + dirY);
             if (y - dirY >= control && y2 + dirY == control2) {
                 timerMoveYB.stop();
             }
+
         }
     });
 
+    public void validar() {
+        System.out.println("validacion");
+        boolean Win = true;
+
+        for (int i = 0; i < 15; i++) {
+            System.out.println(btnControl[i] + " , " + (btnBoton[i].getLocation().x + btnBoton[i].getLocation().y));
+            if (btnControl[i] == (btnBoton[i].getLocation().x + btnBoton[i].getLocation().y)) {
+                continue;
+            } else {
+                Win = false;
+            }
+        }
+        if (Win == true) {
+            timerInit.stop();
+            JOptionPane.showMessageDialog(mDialog, "Ganaste, tu tiempo fue de: " + timePlay.getText() + "segundos");
+        }
+        System.out.println(Win);
+    }
+
     public void actionPerformed(ActionEvent e) {
         btnTemporal = (JButton) e.getSource();
-        if (e.getSource() == btnTemporal) {
-            // System.out.println(btnTemporal.getLocation().x + " " + btnTemporal.getLocation().y);
+        if (e.getSource() == btnTemporal && e.getSource() != btnIniciar) {
+            // System.out.println(btnTemporal.getLocation().x + " " +
+            // btnTemporal.getLocation().y);
 
-            if (btnTemporal.getLocation().x + 55 == btnBoton[15].getLocation().x && btnTemporal.getLocation().y  == btnBoton[15].getLocation().y) {
+            if (btnTemporal.getLocation().x + 55 == btnBoton[15].getLocation().x
+                    && btnTemporal.getLocation().y == btnBoton[15].getLocation().y) {
+                System.out.println("---" + btnBoton[15].getLocation().y + " , " + btnBoton[15].getLocation().x);
                 control = btnBoton[15].getLocation().x;
                 control2 = btnTemporal.getLocation().x;
                 timerMoveXR.start();
+                System.out.println("---" + btnBoton[15].getLocation().y + " , " + btnBoton[15].getLocation().x);
             }
 
-            if (btnTemporal.getLocation().x - 55 == btnBoton[15].getLocation().x && btnTemporal.getLocation().y  == btnBoton[15].getLocation().y) {
+            if (btnTemporal.getLocation().x - 55 == btnBoton[15].getLocation().x
+                    && btnTemporal.getLocation().y == btnBoton[15].getLocation().y) {
+                System.out.println("---" + btnBoton[15].getLocation().y + " , " + btnBoton[15].getLocation().x);
                 control = btnBoton[15].getLocation().x;
                 control2 = btnTemporal.getLocation().x;
                 timerMoveXL.start();
+                System.out.println("---" + btnBoton[15].getLocation().y + " , " + btnBoton[15].getLocation().x);
             }
 
-            if (btnTemporal.getLocation().y + 55 == btnBoton[15].getLocation().y && btnTemporal.getLocation().x  == btnBoton[15].getLocation().x) {
+            if (btnTemporal.getLocation().y + 55 == btnBoton[15].getLocation().y
+                    && btnTemporal.getLocation().x == btnBoton[15].getLocation().x) {
                 control = btnBoton[15].getLocation().y;
                 control2 = btnTemporal.getLocation().y;
                 timerMoveYT.start();
             }
 
-            if (btnTemporal.getLocation().y - 55 == btnBoton[15].getLocation().y && btnTemporal.getLocation().x  == btnBoton[15].getLocation().x) {
+            if (btnTemporal.getLocation().y - 55 == btnBoton[15].getLocation().y
+                    && btnTemporal.getLocation().x == btnBoton[15].getLocation().x) {
                 control = btnBoton[15].getLocation().y;
                 control2 = btnTemporal.getLocation().y;
                 timerMoveYB.start();
+                validar();
             }
-            System.out.println(btnTemporal.getLocation().x + " " + btnTemporal.getLocation().y);
         }
+
         if (e.getSource() == btnIniciar) {
             timePlay.setText("0");
             timerInit.start();
@@ -151,8 +183,9 @@ public class puzzle15 implements ActionListener {
         }
 
         if (e.getSource() == btnIniciar2) {
-            // System.out.println(btnBoton[15].getLocation().x + " " + btnBoton[15].getLocation().y);
-            
+            // System.out.println(btnBoton[15].getLocation().x + " " +
+            // btnBoton[15].getLocation().y);
+
         }
 
     }
