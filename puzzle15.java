@@ -4,7 +4,7 @@ import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 
-public class puzzle15 implements ActionListener {
+public class puzzle15 extends playersPuzzle15 implements ActionListener {
     private JFrame ventana, mDialog;
     private JButton[] btnBoton = new JButton[16];
     private JButton btnIniciar, btnIniciar2, btnTemporal;
@@ -12,9 +12,10 @@ public class puzzle15 implements ActionListener {
     private Random puzzleInit;
     private boolean gameInit = false;
     private JTextField timePlay, namePlayer;
-    private Integer dirX = 5, dirY = 5, control = 0, control2 = 0;
+    private Integer dirX = 5, dirY = 5, control = 0, control2 = 0, idPlayer = 0;;
     private Integer[] btnControl = new Integer[16];
-    private HashMap<Integer, String> player = new HashMap<Integer, String>();
+    private playersPuzzle15 player[] = new playersPuzzle15[5];
+    private FileWriter fw;
 
     void printBtn() {
         puzzleInit = new Random();
@@ -60,40 +61,49 @@ public class puzzle15 implements ActionListener {
         esInfo.setLocation(10, 40);
         ventana.add(esInfo);
 
-        esInfo = new JLabel("Universidad Tecnologica de Panama");
-        esInfo.setSize(250, 50);
-        esInfo.setLocation(450, 50);
-        ventana.add(esInfo);
+        // esInfo = new JLabel("Universidad Tecnologica de Panama");
+        // esInfo.setSize(250, 50);
+        // esInfo.setLocation(450, 50);
+        // ventana.add(esInfo);
 
-        esInfo = new JLabel("Facultad de Sistemas Computacionales");
-        esInfo.setSize(250, 50);
-        esInfo.setLocation(450, 100);
-        ventana.add(esInfo);
+        // esInfo = new JLabel("Facultad de Sistemas Computacionales");
+        // esInfo.setSize(250, 50);
+        // esInfo.setLocation(450, 100);
+        // ventana.add(esInfo);
 
-        esInfo = new JLabel("Licenciatura en Desarrollo de Software");
-        esInfo.setSize(250, 50);
-        esInfo.setLocation(450, 150);
-        ventana.add(esInfo);
+        // esInfo = new JLabel("Licenciatura en Desarrollo de Software");
+        // esInfo.setSize(250, 50);
+        // esInfo.setLocation(450, 150);
+        // ventana.add(esInfo);
 
-        esInfo = new JLabel("Desarrollo de Software III");
-        esInfo.setSize(250, 50);
-        esInfo.setLocation(450, 200);
-        ventana.add(esInfo);
+        // esInfo = new JLabel("Desarrollo de Software III");
+        // esInfo.setSize(250, 50);
+        // esInfo.setLocation(450, 200);
+        // ventana.add(esInfo);
 
-        esInfo = new JLabel("Carlos Solis");
-        esInfo.setSize(100, 50);
-        esInfo.setLocation(450, 250);
-        ventana.add(esInfo);
+        // esInfo = new JLabel("Carlos Solis");
+        // esInfo.setSize(100, 50);
+        // esInfo.setLocation(450, 250);
+        // ventana.add(esInfo);
 
-        esInfo = new JLabel("6-723-1380");
-        esInfo.setSize(100, 50);
-        esInfo.setLocation(450, 300);
-        ventana.add(esInfo);
+        // esInfo = new JLabel("6-723-1380");
+        // esInfo.setSize(100, 50);
+        // esInfo.setLocation(450, 300);
+        // ventana.add(esInfo);
 
-        esInfo = new JLabel("Proyecto #2");
-        esInfo.setSize(100, 50);
-        esInfo.setLocation(450, 350);
-        ventana.add(esInfo);
+        // esInfo = new JLabel("Proyecto #2");
+        // esInfo.setSize(100, 50);
+        // esInfo.setLocation(450, 350);
+        // ventana.add(esInfo);
+        if (player[0].getTimePlay() != 0) {
+
+        }
+        for (int i = 0; i <= 4; i++) {
+            player[i] = new playersPuzzle15();
+            player[i].setPlayer("null");
+            player[i].setTimePlay(0);
+        }
+        creacionFile();
 
         ventana.setVisible(true);
 
@@ -168,6 +178,26 @@ public class puzzle15 implements ActionListener {
         }
     });
 
+    public void creacionFile() {
+
+        try {
+            int menor = 0;
+            fw = new FileWriter("Jugadores.txt", true);
+            fw.write("Jugadores con mejor tiempo\r\n__________________________________\r\n");
+            PrintWriter writer = new PrintWriter("Jugadores.txt");
+            writer.close();
+            fw.write("1. " + player[0].getPlayer() + " con: " + player[0].getTimePlay() + " segundos\r\n");
+            fw.write("2. " + player[1].getPlayer() + " con: " + player[1].getTimePlay() + " segundos\r\n");
+            fw.write("3. " + player[2].getPlayer() + " con: " + player[2].getTimePlay() + " segundos\r\n");
+            fw.write("4. " + player[3].getPlayer() + " con: " + player[3].getTimePlay() + " segundos\r\n");
+            fw.write("5. " + player[4].getPlayer() + " con: " + player[4].getTimePlay() + " segundos\r\n");
+            fw.close();
+
+        } catch (Exception e) {
+            System.out.println("Error al grabar " + e.toString());
+        }
+    }
+
     public void validar() {
         boolean Win = true;
         for (int i = 0; i < 15; i++) {
@@ -181,30 +211,7 @@ public class puzzle15 implements ActionListener {
         if (Win == true) {
             timerInit.stop();
             JOptionPane.showMessageDialog(mDialog, "Ganaste, tu tiempo fue de: " + timePlay.getText() + " segundos: ");
-            FileWriter fw;
-            try {
-                int menor = 0;
-                fw = new FileWriter("Jugadores.txt", false);
-                fw.write("Jugadores con mejor tiempo\r\n__________________________________\r\n");
-                if (player.size() < 5) {
-                    player.put(player.size() + 1, namePlayer.getText());
-                    for (int i = 1; i <= player.size(); i++) {
-                        fw.write(i + ". " + player.get(i) + " con: " + timePlay.getText() + " segundos\r\n");
-                    }
-                }
-                // else{
-                // for (int i = 1; i <= player.size(); i++){
-                // if () {
 
-                // }
-                // }
-                // }
-
-                fw.close();
-
-            } catch (Exception e) {
-                System.out.println("Error al grabar " + e.toString());
-            }
             timePlay.setText(String.valueOf("0"));
             btnIniciar.setText("Reiniciar");
         }
