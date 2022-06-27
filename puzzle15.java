@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.event.*;
 import java.util.*;
+import java.io.*;
 
 public class puzzle15 implements ActionListener {
     private JFrame ventana, mDialog;
@@ -10,14 +11,15 @@ public class puzzle15 implements ActionListener {
     private JLabel esInfo;
     private Random puzzleInit;
     private boolean gameInit = false;
-    private JTextField timePlay;
+    private JTextField timePlay, namePlayer;
     private Integer dirX = 5, dirY = 5, control = 0, control2 = 0;
     private Integer[] btnControl = new Integer[16];
+    private HashMap<Integer, String> player = new HashMap<Integer, String>();
 
     void printBtn() {
         puzzleInit = new Random();
         ventana = new JFrame("Juegos de Pesca - DS3 UTP");
-        ventana.setBounds(100, 100, 500, 500);
+        ventana.setBounds(100, 100, 800, 500);
         ventana.setLayout(null);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -48,6 +50,50 @@ public class puzzle15 implements ActionListener {
         timePlay = new JTextField("0");
         timePlay.setBounds(350, 135, 50, 30);
         ventana.add(timePlay);
+
+        namePlayer = new JTextField("");
+        namePlayer.setBounds(10, 80, 150, 30);
+        ventana.add(namePlayer);
+
+        esInfo = new JLabel("Nombre del jugador: ");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(10, 40);
+        ventana.add(esInfo);
+
+        esInfo = new JLabel("Universidad Tecnologica de Panama");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(450, 50);
+        ventana.add(esInfo);
+
+        esInfo = new JLabel("Facultad de Sistemas Computacionales");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(450, 100);
+        ventana.add(esInfo);
+
+        esInfo = new JLabel("Licenciatura en Desarrollo de Software");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(450, 150);
+        ventana.add(esInfo);
+
+        esInfo = new JLabel("Desarrollo de Software III");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(450, 200);
+        ventana.add(esInfo);
+
+        esInfo = new JLabel("Carlos Solis");
+        esInfo.setSize(100, 50);
+        esInfo.setLocation(450, 250);
+        ventana.add(esInfo);
+
+        esInfo = new JLabel("6-723-1380");
+        esInfo.setSize(100, 50);
+        esInfo.setLocation(450, 300);
+        ventana.add(esInfo);
+
+        esInfo = new JLabel("Proyecto #2");
+        esInfo.setSize(100, 50);
+        esInfo.setLocation(450, 350);
+        ventana.add(esInfo);
 
         ventana.setVisible(true);
 
@@ -135,6 +181,30 @@ public class puzzle15 implements ActionListener {
         if (Win == true) {
             timerInit.stop();
             JOptionPane.showMessageDialog(mDialog, "Ganaste, tu tiempo fue de: " + timePlay.getText() + " segundos: ");
+            FileWriter fw;
+            try {
+                int menor = 0;
+                fw = new FileWriter("Jugadores.txt", false);
+                fw.write("Jugadores con mejor tiempo\r\n__________________________________\r\n");
+                if (player.size() < 5) {
+                    player.put(player.size() + 1, namePlayer.getText());
+                    for (int i = 1; i <= player.size(); i++) {
+                        fw.write(i + ". " + player.get(i) + " con: " + timePlay.getText() + " segundos\r\n");
+                    }
+                }
+                // else{
+                // for (int i = 1; i <= player.size(); i++){
+                // if () {
+
+                // }
+                // }
+                // }
+
+                fw.close();
+
+            } catch (Exception e) {
+                System.out.println("Error al grabar " + e.toString());
+            }
             timePlay.setText(String.valueOf("0"));
             btnIniciar.setText("Reiniciar");
         }
