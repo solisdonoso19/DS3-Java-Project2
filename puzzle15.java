@@ -61,43 +61,43 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         esInfo.setLocation(10, 40);
         ventana.add(esInfo);
 
-        // esInfo = new JLabel("Universidad Tecnologica de Panama");
-        // esInfo.setSize(250, 50);
-        // esInfo.setLocation(450, 50);
-        // ventana.add(esInfo);
+        esInfo = new JLabel("Universidad Tecnologica de Panama");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(450, 50);
+        ventana.add(esInfo);
 
-        // esInfo = new JLabel("Facultad de Sistemas Computacionales");
-        // esInfo.setSize(250, 50);
-        // esInfo.setLocation(450, 100);
-        // ventana.add(esInfo);
+        esInfo = new JLabel("Facultad de Sistemas Computacionales");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(450, 100);
+        ventana.add(esInfo);
 
-        // esInfo = new JLabel("Licenciatura en Desarrollo de Software");
-        // esInfo.setSize(250, 50);
-        // esInfo.setLocation(450, 150);
-        // ventana.add(esInfo);
+        esInfo = new JLabel("Licenciatura en Desarrollo de Software");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(450, 150);
+        ventana.add(esInfo);
 
-        // esInfo = new JLabel("Desarrollo de Software III");
-        // esInfo.setSize(250, 50);
-        // esInfo.setLocation(450, 200);
-        // ventana.add(esInfo);
+        esInfo = new JLabel("Desarrollo de Software III");
+        esInfo.setSize(250, 50);
+        esInfo.setLocation(450, 200);
+        ventana.add(esInfo);
 
-        // esInfo = new JLabel("Carlos Solis");
-        // esInfo.setSize(100, 50);
-        // esInfo.setLocation(450, 250);
-        // ventana.add(esInfo);
+        esInfo = new JLabel("Carlos Solis");
+        esInfo.setSize(100, 50);
+        esInfo.setLocation(450, 250);
+        ventana.add(esInfo);
 
-        // esInfo = new JLabel("6-723-1380");
-        // esInfo.setSize(100, 50);
-        // esInfo.setLocation(450, 300);
-        // ventana.add(esInfo);
+        esInfo = new JLabel("6-723-1380");
+        esInfo.setSize(100, 50);
+        esInfo.setLocation(450, 300);
+        ventana.add(esInfo);
 
-        // esInfo = new JLabel("Proyecto #2");
-        // esInfo.setSize(100, 50);
-        // esInfo.setLocation(450, 350);
-        // ventana.add(esInfo);
-        if (player[0].getTimePlay() != 0) {
+        esInfo = new JLabel("Proyecto #2");
+        esInfo.setSize(100, 50);
+        esInfo.setLocation(450, 350);
+        ventana.add(esInfo);
+        // if (player[0].getTimePlay() != 0) {
 
-        }
+        // }
         for (int i = 0; i <= 4; i++) {
             player[i] = new playersPuzzle15();
             player[i].setPlayer("null");
@@ -178,6 +178,16 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         }
     });
 
+    public void leerFile() {
+        try {
+            File read = new File("Jugadores.txt");
+            Scanner readFile = new Scanner(read);
+
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
     public void creacionFile() {
 
         try {
@@ -214,6 +224,7 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
 
             timePlay.setText(String.valueOf("0"));
             btnIniciar.setText("Reiniciar");
+            gameInit = false;
         }
     }
 
@@ -269,7 +280,7 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
             }
         }
 
-        if (e.getSource() == btnIniciar2) {
+        if (e.getSource() == btnIniciar2 && gameInit == false) {
             gameInit = true;
             control = btnBoton[15].getLocation().x;
             control2 = btnBoton[14].getLocation().x;
