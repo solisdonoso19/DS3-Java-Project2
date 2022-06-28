@@ -14,13 +14,16 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
     private JTextField timePlay, namePlayer;
     private Integer dirX = 5, dirY = 5, control = 0, control2 = 0, idPlayer = 0;;
     private Integer[] btnControl = new Integer[16];
-    private playersPuzzle15 player[] = new playersPuzzle15[5];
+    private playersPuzzle15 player[] = new playersPuzzle15[6];
     private FileWriter fw;
+    private DefaultListModel<String> bestPlayers;
+    private JList<String> listaBestPlayers;
+    private JScrollPane scroll;
 
     void printBtn() {
         puzzleInit = new Random();
         ventana = new JFrame("Juegos de Pesca - DS3 UTP");
-        ventana.setBounds(100, 100, 800, 500);
+        ventana.setBounds(100, 100, 800, 550);
         ventana.setLayout(null);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -95,15 +98,32 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         esInfo.setSize(100, 50);
         esInfo.setLocation(450, 350);
         ventana.add(esInfo);
-        // if (player[0].getTimePlay() != 0) {
 
-        // }
-        for (int i = 0; i <= 4; i++) {
+        esInfo = new JLabel("Tabla de Mejores Jugadores");
+        esInfo.setSize(200, 50);
+        esInfo.setLocation(115, 340);
+        ventana.add(esInfo);
+
+        bestPlayers = new DefaultListModel<String>();
+        listaBestPlayers = new JList<String>(bestPlayers);
+        scroll = new JScrollPane(listaBestPlayers);
+        scroll.setBounds(115, 380, 300, 130);
+        ventana.add(scroll);
+
+        for (int i = 0; i <= 5; i++) {
             player[i] = new playersPuzzle15();
-            player[i].setPlayer("null");
-            player[i].setTimePlay(0);
+        }
+
+        if (player[0].getPlayer() == null) {
+            for (int i = 0; i <= 5; i++) {
+                player[i].setPlayer("null");
+                player[i].setTimePlay(10000);
+            }
+        } else {
+
         }
         creacionFile();
+        leerFile();
 
         ventana.setVisible(true);
 
@@ -179,19 +199,24 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
     });
 
     public void leerFile() {
+
         try {
             File read = new File("Jugadores.txt");
             Scanner readFile = new Scanner(read);
+            String players;
+            while (readFile.hasNextLine()) {
+                players = readFile.nextLine();
+                bestPlayers.addElement(players);
+            }
 
         } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println("Error de lectura: " + e.toString());
         }
     }
 
     public void creacionFile() {
 
         try {
-            int menor = 0;
             fw = new FileWriter("Jugadores.txt", true);
             fw.write("Jugadores con mejor tiempo\r\n__________________________________\r\n");
             PrintWriter writer = new PrintWriter("Jugadores.txt");
@@ -208,6 +233,20 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         }
     }
 
+    public void mejorTiempo() {
+        bestPlayers.clear();
+        int menor = 0;
+        for (int i = 0; i <= 5; i++) {
+            if (menor < player[i].getTimePlay()) {
+                player[i].setPlayer(namePlayer.getText());
+                player[i].setTimePlay(Integer.parseInt(timePlay.getText()));
+            }
+            break;
+        }
+        creacionFile();
+        leerFile();
+    }
+
     public void validar() {
         boolean Win = true;
         for (int i = 0; i < 15; i++) {
@@ -221,7 +260,7 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         if (Win == true) {
             timerInit.stop();
             JOptionPane.showMessageDialog(mDialog, "Ganaste, tu tiempo fue de: " + timePlay.getText() + " segundos: ");
-
+            mejorTiempo();
             timePlay.setText(String.valueOf("0"));
             btnIniciar.setText("Reiniciar");
             gameInit = false;
