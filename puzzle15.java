@@ -3,6 +3,7 @@ import javax.swing.Timer;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+import java.nio.file.*;
 
 public class puzzle15 extends playersPuzzle15 implements ActionListener {
     private JFrame ventana, mDialog;
@@ -10,9 +11,9 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
     private JButton btnIniciar, btnIniciar2, btnTemporal;
     private JLabel esInfo;
     private Random puzzleInit;
-    private boolean gameInit = false;
-    private JTextField timePlay, namePlayer;
-    private Integer dirX = 5, dirY = 5, control = 0, control2 = 0, idPlayer = 0;;
+    private boolean gameInit = false, fileExist;
+    private JTextField timePlay, namePlayer, attemps;
+    private Integer dirX = 5, dirY = 5, control = 0, control2 = 0, idPlayer = 0, menor = 0;
     private Integer[] btnControl = new Integer[16];
     private playersPuzzle15 player[] = new playersPuzzle15[6];
     private FileWriter fw;
@@ -54,6 +55,14 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         timePlay = new JTextField("0");
         timePlay.setBounds(350, 135, 50, 30);
         ventana.add(timePlay);
+
+        esInfo = new JLabel("Intentos");
+        esInfo.setBounds(350, 165, 90, 30);
+        ventana.add(esInfo);
+
+        attemps = new JTextField("0");
+        attemps.setBounds(350, 195, 50, 30);
+        ventana.add(attemps);
 
         namePlayer = new JTextField("");
         namePlayer.setBounds(10, 80, 150, 30);
@@ -110,20 +119,45 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         scroll.setBounds(115, 380, 300, 130);
         ventana.add(scroll);
 
-        for (int i = 0; i <= 5; i++) {
-            player[i] = new playersPuzzle15();
-        }
+        Path path = Paths.get("Jugadores.txt");
+        fileExist = Files.isRegularFile(path);
 
-        if (player[0].getPlayer() == null) {
-            for (int i = 0; i <= 5; i++) {
-                player[i].setPlayer("null");
-                player[i].setTimePlay(10000);
+        if (fileExist) {
+            System.out.println("Existe1");
+            try {
+
+                File read = new File("Jugadores.txt");
+                Scanner readFile = new Scanner(read);
+                String players, times;
+                int i = 0;
+                while (readFile.hasNextLine()) {
+                    System.out.println("aqui " + i);
+                    players = readFile.nextLine();
+                    times = readFile.nextLine();
+                    player[i] = new playersPuzzle15();
+                    player[i].setPlayer(players);
+                    player[i].setTimePlay(Integer.parseInt(times));
+
+                    bestPlayers.addElement((i + 1) + " " + players + " con : " + times + " segundos");
+
+                    i++;
+                }
+                player[5] = new playersPuzzle15();
+                player[5].setPlayer("null");
+                player[5].setTimePlay(0);
+
+            } catch (Exception e) {
+                System.out.println("Error de lectura: " + e.toString());
             }
         } else {
-
+            for (int i = 0; i <= 5; i++) {
+                player[i] = new playersPuzzle15();
+                player[i].setPlayer("null");
+                player[i].setTimePlay(0);
+            }
+            creacionFile();
+            leerFile();
         }
-        creacionFile();
-        leerFile();
 
         ventana.setVisible(true);
 
@@ -203,12 +237,17 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         try {
             File read = new File("Jugadores.txt");
             Scanner readFile = new Scanner(read);
-            String players;
+            String players, times;
+            int i = 0;
             while (readFile.hasNextLine()) {
-                players = readFile.nextLine();
-                bestPlayers.addElement(players);
-            }
 
+                players = readFile.nextLine();
+                times = readFile.nextLine();
+
+                bestPlayers.addElement((i + 1) + " " + players + " con : " + times + " segundos");
+
+                i = i + 1;
+            }
         } catch (Exception e) {
             System.out.println("Error de lectura: " + e.toString());
         }
@@ -218,14 +257,13 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
 
         try {
             fw = new FileWriter("Jugadores.txt", true);
-            fw.write("Jugadores con mejor tiempo\r\n__________________________________\r\n");
             PrintWriter writer = new PrintWriter("Jugadores.txt");
             writer.close();
-            fw.write("1. " + player[0].getPlayer() + " con: " + player[0].getTimePlay() + " segundos\r\n");
-            fw.write("2. " + player[1].getPlayer() + " con: " + player[1].getTimePlay() + " segundos\r\n");
-            fw.write("3. " + player[2].getPlayer() + " con: " + player[2].getTimePlay() + " segundos\r\n");
-            fw.write("4. " + player[3].getPlayer() + " con: " + player[3].getTimePlay() + " segundos\r\n");
-            fw.write("5. " + player[4].getPlayer() + " con: " + player[4].getTimePlay() + " segundos\r\n");
+            fw.write(player[0].getPlayer() + "\r\n" + player[0].getTimePlay() + "\r\n");
+            fw.write(player[1].getPlayer() + "\r\n" + player[1].getTimePlay() + "\r\n");
+            fw.write(player[2].getPlayer() + "\r\n" + player[2].getTimePlay() + "\r\n");
+            fw.write(player[3].getPlayer() + "\r\n" + player[3].getTimePlay() + "\r\n");
+            fw.write(player[4].getPlayer() + "\r\n" + player[4].getTimePlay() + "\r\n");
             fw.close();
 
         } catch (Exception e) {
@@ -235,14 +273,10 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
 
     public void mejorTiempo() {
         bestPlayers.clear();
-        int menor = 0;
-        for (int i = 0; i <= 5; i++) {
-            if (menor < player[i].getTimePlay()) {
-                player[i].setPlayer(namePlayer.getText());
-                player[i].setTimePlay(Integer.parseInt(timePlay.getText()));
-            }
-            break;
-        }
+
+        player[5].setPlayer(namePlayer.getText());
+        player[5].setTimePlay(Integer.parseInt(timePlay.getText()));
+
         creacionFile();
         leerFile();
     }
@@ -259,73 +293,95 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         }
         if (Win == true) {
             timerInit.stop();
-            JOptionPane.showMessageDialog(mDialog, "Ganaste, tu tiempo fue de: " + timePlay.getText() + " segundos: ");
+            JOptionPane.showMessageDialog(mDialog,
+                    "Ganaste, tu tiempo fue de: " + timePlay.getText() + " segundos y " + attemps.getText()
+                            + " intentos");
             mejorTiempo();
             timePlay.setText(String.valueOf("0"));
             btnIniciar.setText("Reiniciar");
+            attemps.setText("0");
             gameInit = false;
         }
     }
 
     public void actionPerformed(ActionEvent e) {
-        btnTemporal = (JButton) e.getSource();
-        if (e.getSource() == btnTemporal && e.getSource() != btnIniciar && e.getSource() != btnIniciar2 && gameInit) {
 
-            if (btnTemporal.getLocation().x + 55 == btnBoton[15].getLocation().x
-                    && btnTemporal.getLocation().y == btnBoton[15].getLocation().y) {
+        if (timerMove15.isRunning() || timerMoveXL.isRunning() || timerMoveXR.isRunning()
+                || timerMoveYB.isRunning() || timerMoveYT.isRunning()) {
+            System.out.println("Controlando los timers");
+        } else {
+            btnTemporal = (JButton) e.getSource();
+            if (e.getSource() == btnTemporal && e.getSource() != btnIniciar && e.getSource() != btnIniciar2
+                    && gameInit) {
 
-                control = btnBoton[15].getLocation().x;
-                control2 = btnTemporal.getLocation().x;
-                timerMoveXR.start();
+                if (btnTemporal.getLocation().x + 55 == btnBoton[15].getLocation().x
+                        && btnTemporal.getLocation().y == btnBoton[15].getLocation().y) {
+
+                    attemps.setText(String.valueOf(Integer.parseInt(attemps.getText()) + 1));
+                    control = btnBoton[15].getLocation().x;
+                    control2 = btnTemporal.getLocation().x;
+                    timerMoveXR.start();
+
+                }
+
+                if (btnTemporal.getLocation().x - 55 == btnBoton[15].getLocation().x
+                        && btnTemporal.getLocation().y == btnBoton[15].getLocation().y) {
+                    attemps.setText(String.valueOf(Integer.parseInt(attemps.getText()) + 1));
+                    control = btnBoton[15].getLocation().x;
+                    control2 = btnTemporal.getLocation().x;
+                    timerMoveXL.start();
+                }
+
+                if (btnTemporal.getLocation().y + 55 == btnBoton[15].getLocation().y
+                        && btnTemporal.getLocation().x == btnBoton[15].getLocation().x) {
+                    attemps.setText(String.valueOf(Integer.parseInt(attemps.getText()) + 1));
+                    control = btnBoton[15].getLocation().y;
+                    control2 = btnTemporal.getLocation().y;
+                    timerMoveYT.start();
+                }
+
+                if (btnTemporal.getLocation().y - 55 == btnBoton[15].getLocation().y
+                        && btnTemporal.getLocation().x == btnBoton[15].getLocation().x) {
+                    attemps.setText(String.valueOf(Integer.parseInt(attemps.getText()) + 1));
+                    control = btnBoton[15].getLocation().y;
+                    control2 = btnTemporal.getLocation().y;
+                    timerMoveYB.start();
+                }
 
             }
 
-            if (btnTemporal.getLocation().x - 55 == btnBoton[15].getLocation().x
-                    && btnTemporal.getLocation().y == btnBoton[15].getLocation().y) {
-                control = btnBoton[15].getLocation().x;
-                control2 = btnTemporal.getLocation().x;
-                timerMoveXL.start();
+            if (e.getSource() == btnIniciar) {
+                if (namePlayer.getText().equals("")) {
+                    JOptionPane.showMessageDialog(mDialog, "Por favor introduzca un nombre");
+                } else {
+                    gameInit = true;
+                    timePlay.setText("0");
+                    timerInit.start();
+                    int x, y, j;
+                    for (int i = 0; i < 15; i++) {
+                        j = puzzleInit.nextInt(15);
+                        x = btnBoton[i].getLocation().x;
+                        y = btnBoton[i].getLocation().y;
+
+                        btnBoton[i].setLocation(btnBoton[j].getLocation().x,
+                                btnBoton[j].getLocation().y);
+                        btnBoton[j].setLocation(x, y);
+                    }
+                }
             }
 
-            if (btnTemporal.getLocation().y + 55 == btnBoton[15].getLocation().y
-                    && btnTemporal.getLocation().x == btnBoton[15].getLocation().x) {
-                control = btnBoton[15].getLocation().y;
-                control2 = btnTemporal.getLocation().y;
-                timerMoveYT.start();
+            if (e.getSource() == btnIniciar2 && gameInit == false) {
+                if (namePlayer.getText().equals("")) {
+                    JOptionPane.showMessageDialog(mDialog, "Por favor introduzca un nombre");
+                } else {
+                    gameInit = true;
+                    control = btnBoton[15].getLocation().x;
+                    control2 = btnBoton[14].getLocation().x;
+                    timerMove15.start();
+                    timerInit.start();
+                }
+
             }
-
-            if (btnTemporal.getLocation().y - 55 == btnBoton[15].getLocation().y
-                    && btnTemporal.getLocation().x == btnBoton[15].getLocation().x) {
-                control = btnBoton[15].getLocation().y;
-                control2 = btnTemporal.getLocation().y;
-                timerMoveYB.start();
-            }
-
-        }
-
-        if (e.getSource() == btnIniciar) {
-            gameInit = true;
-            timePlay.setText("0");
-            timerInit.start();
-            int x, y, j;
-            for (int i = 0; i < 15; i++) {
-                j = puzzleInit.nextInt(15);
-                x = btnBoton[i].getLocation().x;
-                y = btnBoton[i].getLocation().y;
-
-                btnBoton[i].setLocation(btnBoton[j].getLocation().x,
-                        btnBoton[j].getLocation().y);
-                btnBoton[j].setLocation(x, y);
-            }
-        }
-
-        if (e.getSource() == btnIniciar2 && gameInit == false) {
-            gameInit = true;
-            control = btnBoton[15].getLocation().x;
-            control2 = btnBoton[14].getLocation().x;
-            timerMove15.start();
-            timerInit.start();
-
         }
 
     }
