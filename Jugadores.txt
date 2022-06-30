@@ -1,7 +1,12 @@
-Jugadores con mejor tiempo
-__________________________________
-1. null con: 10000 segundos
-2. null con: 10000 segundos
-3. null con: 10000 segundos
-4. null con: 10000 segundos
-5. null con: 10000 segundos
+ivan
+5
+carlos
+8
+ivan
+8
+ivan
+8
+null
+10000
+null
+10000

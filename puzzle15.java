@@ -3,6 +3,7 @@ import javax.swing.Timer;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+import java.lang.management.PlatformLoggingMXBean;
 import java.nio.file.*;
 
 public class puzzle15 extends playersPuzzle15 implements ActionListener {
@@ -144,8 +145,11 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
                 }
                 player[5] = new playersPuzzle15();
                 player[5].setPlayer("null");
-                player[5].setTimePlay(0);
+                player[5].setTimePlay(1000);
 
+                for (i = 0; i <= 5; i++) {
+                    System.out.println(player[i].getPlayer() + " , " + player[i].getTimePlay());
+                }
             } catch (Exception e) {
                 System.out.println("Error de lectura: " + e.toString());
             }
@@ -153,7 +157,7 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
             for (int i = 0; i <= 5; i++) {
                 player[i] = new playersPuzzle15();
                 player[i].setPlayer("null");
-                player[i].setTimePlay(0);
+                player[i].setTimePlay(10000);
             }
             creacionFile();
             leerFile();
@@ -264,6 +268,7 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
             fw.write(player[2].getPlayer() + "\r\n" + player[2].getTimePlay() + "\r\n");
             fw.write(player[3].getPlayer() + "\r\n" + player[3].getTimePlay() + "\r\n");
             fw.write(player[4].getPlayer() + "\r\n" + player[4].getTimePlay() + "\r\n");
+
             fw.close();
 
         } catch (Exception e) {
@@ -277,6 +282,18 @@ public class puzzle15 extends playersPuzzle15 implements ActionListener {
         player[5].setPlayer(namePlayer.getText());
         player[5].setTimePlay(Integer.parseInt(timePlay.getText()));
 
+        Arrays.sort(player, new Comparator<playersPuzzle15>() {
+            @Override
+            public int compare(playersPuzzle15 obj1, playersPuzzle15 obj2) {
+                if (obj1.getTimePlay() > obj2.getTimePlay()) {
+                    return 1;
+                } else if (obj1.getTimePlay() < obj2.getTimePlay()) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
         creacionFile();
         leerFile();
     }

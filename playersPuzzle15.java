@@ -1,4 +1,4 @@
-public class playersPuzzle15 {
+public class playersPuzzle15 implements Comparable<playersPuzzle15> {
     protected String player;
     protected Integer timePlay;
 
@@ -16,5 +16,10 @@ public class playersPuzzle15 {
 
     public Integer getTimePlay() {
         return timePlay;
+    }
+
+    @Override
+    public int compareTo(playersPuzzle15 player) {
+        return this.player.compareToIgnoreCase(player.player);
     }
 }
